@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRC8 MAXIM 校验码计算器</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <!-- 头部 -->
+    <header class="header">
+      <div class="header-content">
+        <h1><i class="fas fa-calculator"></i> CRC8 MAXIM 校验码计算器</h1>
+        <button class="theme-toggle" id="themeToggle" title="切换主题">
+          <i class="fas fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main class="main-content">
+      <!-- 输入区域 -->
+      <section class="input-section">
+        <div class="card">
+          <h2><i class="fas fa-edit"></i> 数据输入</h2>
+
+
+
+          <!-- 格子式数据输入 -->
+          <div class="input-group">
+            <label>输入数据（十六进制）:</label>
+            <div class="hex-input-grid" id="hexInputGrid">
+              <!-- 动态生成的输入格子 -->
+            </div>
+            <div class="input-controls">
+              <button class="btn-clear" id="clearInput" title="清空所有输入">
+                <i class="fas fa-eraser"></i> 清空
+              </button>
+              <button class="btn-fill" id="fillZeros" title="填充零">
+                <i class="fas fa-fill"></i> 填充00
+              </button>
+              <span id="inputStatus" class="input-status">已输入: 0/9 字节</span>
+            </div>
+          </div>
+
+          <!-- CRC8算法信息 -->
+          <div class="algorithm-info">
+            <div class="info-card collapsed">
+              <div class="info-card-header" id="algorithmToggle">
+                <h3><i class="fas fa-cog"></i> 算法信息</h3>
+                <button class="toggle-btn" title="展开/收起">
+                  <i class="fas fa-chevron-down"></i>
+                </button>
+              </div>
+              <div class="algorithm-details">
+                <div class="detail-item">
+                  <label>算法:</label>
+                  <span>CRC8-MAXIM</span>
+                </div>
+                <div class="detail-item">
+                  <label>多项式:</label>
+                  <span>0x8C</span>
+                </div>
+                <div class="detail-item">
+                  <label>初始值:</label>
+                  <span>0x00</span>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+
+          <!-- 快捷操作 -->
+          <div class="quick-actions">
+            <button class="btn btn-primary" id="calculateBtn">
+              <i class="fas fa-play"></i> 计算 CRC8
+            </button>
+            <button class="btn btn-secondary" id="exampleBtn">
+              <i class="fas fa-lightbulb"></i> 示例数据
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 结果区域 -->
+      <section class="result-section">
+        <div class="card">
+          <h2><i class="fas fa-chart-bar"></i> 计算结果</h2>
+
+          <!-- 结果显示 -->
+          <div class="result-display">
+            <div class="result-item">
+              <label>十六进制:</label>
+              <div class="result-value">
+                <span id="hexResult">--</span>
+                <button class="btn-copy" data-copy="hex" title="复制">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+            <div class="result-item">
+              <label>十进制:</label>
+              <div class="result-value">
+                <span id="decResult">--</span>
+                <button class="btn-copy" data-copy="dec" title="复制">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+            <div class="result-item">
+              <label>二进制:</label>
+              <div class="result-value">
+                <span id="binResult">--</span>
+                <button class="btn-copy" data-copy="bin" title="复制">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 计算信息 -->
+          <div class="calc-info" id="calcInfo" style="display: none;">
+            <h3><i class="fas fa-info-circle"></i> 计算信息</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <label>多项式:</label>
+                <span id="usedPoly">--</span>
+              </div>
+              <div class="info-item">
+                <label>数据长度:</label>
+                <span id="dataLength">--</span>
+              </div>
+              <div class="info-item">
+                <label>处理时间:</label>
+                <span id="processTime">--</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 历史记录 -->
+          <div class="history-section">
+            <div class="history-header">
+              <h3><i class="fas fa-history"></i> 历史记录</h3>
+              <button class="btn-clear-history" id="clearHistory" title="清空历史">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+            <div class="history-list" id="historyList">
+              <div class="history-empty">暂无历史记录</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+
+
+    <!-- 页脚 -->
+    <footer class="footer">
+      <p>&copy; 2025 CRC8 校验码计算器 |
+        <a href="https://github.com" target="_blank">
+          <i class="fab fa-github"></i> GitHub
+        </a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- 提示消息 -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span class="toast-message"></span>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
